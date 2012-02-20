@@ -24,9 +24,16 @@ $config['github_branch'] = '';
 $config['current_commit'] = '';
 
 /**
- * A list of files to never perform an update on
+ * A list of files or folders to never perform an update on.
+ * Not specifying a relative path from the webroot will apply
+ * the ignore to any files with a matching segment.
+ *
+ * I.E. Specifying 'admin' as an ignore will ignore
+ * 'application/controllers/admin.php'
+ * 'application/views/admin/test.php'
+ * and any other path with the term 'admin' in it.
  */
-$config['ignored_files'] = array('application/config/config.php');
+$config['ignored_files'] = array('application/config');
 
 /**
  * Flag to indicate if the downloaded and extracted update files

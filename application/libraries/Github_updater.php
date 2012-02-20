@@ -64,7 +64,7 @@ class Github_updater
                 foreach($files as $file)
                 {
                     //If the file isn't in the ignored list then perform the update
-                    if(array_search($file->filename, $this->ci->config->item('ignored_files')) === false)
+                    if(!$this->_is_ignored($file->filename))
                     {
                         //If the status is removed then delete the file
                         if($file->status === 'removed')unlink($file->filename);
@@ -84,6 +84,15 @@ class Github_updater
                 return true;
             }
         }
+        return false;
+    }
+
+    private function _is_ignored($filename)
+    {
+        $ignored = $this->ci->config->item('ignored_files');
+        foreach($ignored as $ignore)
+            if(strpos($filename, $ignore) !== false)return true;
+
         return false;
     }
 
