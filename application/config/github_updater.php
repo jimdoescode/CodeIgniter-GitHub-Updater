@@ -26,8 +26,7 @@ $config['current_commit'] = '';
 /**
  * A list of files to never perform an update on
  */
-$config['ignored_files'] = array('application/config/config.php',
-                                 'application/config/github_updater.php');
+$config['ignored_files'] = array('application/config/config.php');
 
 /**
  * Flag to indicate if the downloaded and extracted update files
