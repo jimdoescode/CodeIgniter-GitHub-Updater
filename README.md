@@ -9,6 +9,10 @@ version of the repository.
 For more information check out my blog.
 http://jimdoescode.blogspot.com/2012/02/keep-your-ci-instances-up-to-date-with.html
 
+You can also see the test repo I use for performing remote updates.
+https://github.com/jimdoescode/Test-Auto-Updater
+Pay close attention to the welcome controller and the github_updater config file.
+
 Usage
 ------
 Copy the files under your application directory. 
