@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 class Github_updater
 {
-    const API_URL = 'https://api.github.com/';
+    const API_URL = 'https://api.github.com/repos/';
     const GITHUB_URL = 'https://github.com/';
     const CONFIG_FILE = 'application/config/github_updater.php';
 
@@ -41,8 +41,30 @@ class Github_updater
      */
     public function has_update()
     {
-        $branches = json_decode($this->_connect(self::API_URL.'repos/'.$this->ci->config->item('github_user').'/'.$this->ci->config->item('github_repo').'/branches'));
+        $branches = json_decode($this->_connect(self::API_URL.$this->ci->config->item('github_user').'/'.$this->ci->config->item('github_repo').'/branches'));
         return $branches[0]->commit->sha !== $this->ci->config->item('current_commit');
+    }
+
+    /**
+     * If there is an update available get an array of all of the
+     * commit messages between the versions
+     *
+     * @return array of the messages or false if no update
+     */
+    public function get_update_comments()
+    {
+        $branches = json_decode($this->_connect(self::API_URL.$this->ci->config->item('github_user').'/'.$this->ci->config->item('github_repo').'/branches'));
+        $hash = $branches[0]->commit->sha;
+        if($hash !== $this->ci->config->item('current_commit'))
+        {
+            $messages = array();
+            $response = json_decode($this->_connect(self::API_URL.$this->ci->config->item('github_user').'/'.$this->ci->config->item('github_repo').'/compare/'.$this->ci->config->item('current_commit').'...'.$hash));
+            $commits = $response->commits;
+            foreach($commits as $commit)
+                $messages[] = $commit->commit->message;
+            return $messages;
+        }
+        return false;
     }
 
     /**
@@ -52,11 +74,11 @@ class Github_updater
      */
     public function update()
     {
-        $branches = json_decode($this->_connect(self::API_URL.'repos/'.$this->ci->config->item('github_user').'/'.$this->ci->config->item('github_repo').'/branches'));
+        $branches = json_decode($this->_connect(self::API_URL.$this->ci->config->item('github_user').'/'.$this->ci->config->item('github_repo').'/branches'));
         $hash = $branches[0]->commit->sha;
         if($hash !== $this->ci->config->item('current_commit'))
         {
-            $commits = json_decode($this->_connect(self::API_URL.'repos/'.$this->ci->config->item('github_user').'/'.$this->ci->config->item('github_repo').'/compare/'.$this->ci->config->item('current_commit').'...'.$hash));
+            $commits = json_decode($this->_connect(self::API_URL.$this->ci->config->item('github_user').'/'.$this->ci->config->item('github_repo').'/compare/'.$this->ci->config->item('current_commit').'...'.$hash));
             $files = $commits->files;
             if($dir = $this->_get_and_extract($hash))
             {
